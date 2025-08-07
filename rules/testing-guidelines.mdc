@@ -1,0 +1,467 @@
+---
+alwaysApply: false
+---
+
+# Frontend Testing Guide for AI Development
+
+This document provides comprehensive testing guidelines and patterns for frontend application development. Use this as a reference when generating test code with AI assistance.
+
+## Project Context
+
+### Tech Stack
+
+- **Frontend Framework**: React Native with Expo
+- **Language**: TypeScript
+- **Testing Frameworks**:
+  - Jest (Unit/Integration tests)
+  - React Native Testing Library (Component tests)
+  - Detox (E2E tests)
+- **State Management**: Context API / Redux (specify your choice)
+- **Navigation**: React Navigation
+- **Styling**: NativeWind/Tailwind CSS
+
+### Project Structure
+
+```
+src/
+├── components/           # Reusable UI components
+│   └── __tests__/       # Component tests
+├── screens/             # Screen components
+│   └── __tests__/       # Screen tests
+├── hooks/               # Custom hooks
+│   └── __tests__/       # Hook tests
+├── services/            # API services
+│   └── __tests__/       # Service tests
+├── utils/               # Utility functions
+│   └── __tests__/       # Utility tests
+└── __tests__/           # Integration & E2E tests
+```
+
+## Testing Principles & Standards
+
+### Test Naming Convention
+
+```typescript
+describe("ComponentName", () => {
+  describe("when [condition]", () => {
+    it("should [expected behavior]", () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+### Test Categories and Coverage Requirements
+
+#### 1. Unit Tests (70% of tests)
+
+- **Components**: Test props, state, user interactions
+- **Hooks**: Test state changes, side effects, return values
+- **Utils**: Test pure functions, edge cases, error handling
+- **Services**: Test API calls, data transformation, error states
+
+#### 2. Integration Tests (20% of tests)
+
+- Screen navigation flows
+- Component interaction with services
+- State management integration
+- Hook combinations
+
+#### 3. E2E Tests (10% of tests)
+
+- Critical user journeys
+- Authentication flows
+- Core app functionality
+
+## Testing Patterns and Examples
+
+### Component Testing Pattern
+
+```typescript
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { CustomButton } from "../CustomButton";
+
+describe("CustomButton", () => {
+  const defaultProps = {
+    title: "Test Button",
+    onPress: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("when rendered", () => {
+    it("should display the correct title", () => {
+      const { getByText } = render(<CustomButton {...defaultProps} />);
+      expect(getByText("Test Button")).toBeTruthy();
+    });
+
+    it("should be accessible", () => {
+      const { getByRole } = render(<CustomButton {...defaultProps} />);
+      expect(getByRole("button")).toBeTruthy();
+    });
+  });
+
+  describe("when pressed", () => {
+    it("should call onPress callback", () => {
+      const { getByText } = render(<CustomButton {...defaultProps} />);
+      fireEvent.press(getByText("Test Button"));
+      expect(defaultProps.onPress).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("when disabled", () => {
+    it("should not call onPress", () => {
+      const { getByText } = render(<CustomButton {...defaultProps} disabled />);
+      fireEvent.press(getByText("Test Button"));
+      expect(defaultProps.onPress).not.toHaveBeenCalled();
+    });
+  });
+});
+```
+
+### Hook Testing Pattern
+
+```typescript
+import { renderHook, act } from "@testing-library/react-native";
+import { useCounter } from "../useCounter";
+
+describe("useCounter", () => {
+  it("should initialize with default value", () => {
+    const { result } = renderHook(() => useCounter());
+    expect(result.current.count).toBe(0);
+  });
+
+  it("should initialize with custom value", () => {
+    const { result } = renderHook(() => useCounter(5));
+    expect(result.current.count).toBe(5);
+  });
+
+  it("should increment count", () => {
+    const { result } = renderHook(() => useCounter());
+
+    act(() => {
+      result.current.increment();
+    });
+
+    expect(result.current.count).toBe(1);
+  });
+});
+```
+
+### Screen Testing Pattern
+
+```typescript
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { LoginScreen } from "../LoginScreen";
+
+// Mock navigation
+const mockNavigate = jest.fn();
+jest.mock("@react-navigation/native", () => ({
+  ...jest.requireActual("@react-navigation/native"),
+  useNavigation: () => ({
+    navigate: mockNavigate,
+  }),
+}));
+
+describe("LoginScreen", () => {
+  const renderLoginScreen = () =>
+    render(
+      <NavigationContainer>
+        <LoginScreen />
+      </NavigationContainer>
+    );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("when user enters valid credentials", () => {
+    it("should navigate to home screen", async () => {
+      const { getByPlaceholderText, getByText } = renderLoginScreen();
+
+      fireEvent.changeText(getByPlaceholderText("Email"), "test@example.com");
+      fireEvent.changeText(getByPlaceholderText("Password"), "password123");
+      fireEvent.press(getByText("Login"));
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("Home");
+      });
+    });
+  });
+});
+```
+
+### API Service Testing Pattern
+
+```typescript
+import { userService } from "../userService";
+
+// Mock fetch
+global.fetch = jest.fn();
+
+describe("userService", () => {
+  beforeEach(() => {
+    (fetch as jest.Mock).mockClear();
+  });
+
+  describe("getUser", () => {
+    it("should return user data on successful request", async () => {
+      const mockUser = { id: 1, name: "John Doe" };
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockUser,
+      });
+
+      const result = await userService.getUser(1);
+
+      expect(result).toEqual(mockUser);
+      expect(fetch).toHaveBeenCalledWith("/api/users/1");
+    });
+
+    it("should throw error on failed request", async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      await expect(userService.getUser(1)).rejects.toThrow("User not found");
+    });
+  });
+});
+```
+
+## Mocking Guidelines
+
+### Common Mocks to Include
+
+```typescript
+// React Navigation
+jest.mock("@react-navigation/native", () => ({
+  useNavigation: () => ({
+    navigate: jest.fn(),
+    goBack: jest.fn(),
+  }),
+  useFocusEffect: jest.fn(),
+}));
+
+// AsyncStorage
+jest.mock("@react-native-async-storage/async-storage", () => ({
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+}));
+
+// React Native modules
+jest.mock("react-native", () => ({
+  ...jest.requireActual("react-native"),
+  Alert: {
+    alert: jest.fn(),
+  },
+}));
+
+// API calls
+jest.mock("../services/api", () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn(),
+  delete: jest.fn(),
+}));
+```
+
+## Test Data Management
+
+### Factory Pattern for Test Data
+
+```typescript
+// testUtils/factories.ts
+export const createMockUser = (overrides = {}) => ({
+  id: 1,
+  name: "John Doe",
+  email: "john@example.com",
+  ...overrides,
+});
+
+export const createMockPost = (overrides = {}) => ({
+  id: 1,
+  title: "Test Post",
+  content: "Test content",
+  userId: 1,
+  ...overrides,
+});
+```
+
+### Custom Render Function
+
+```typescript
+// testUtils/customRender.tsx
+import { render, RenderOptions } from "@testing-library/react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { ThemeProvider } from "../contexts/ThemeContext";
+
+const AllProviders = ({ children }: { children: React.ReactNode }) => (
+  <NavigationContainer>
+    <ThemeProvider>{children}</ThemeProvider>
+  </NavigationContainer>
+);
+
+export const customRender = (ui: React.ReactElement, options?: RenderOptions) =>
+  render(ui, { wrapper: AllProviders, ...options });
+```
+
+## Accessibility Testing
+
+### Required Accessibility Tests
+
+```typescript
+describe("Accessibility", () => {
+  it("should have proper accessibility labels", () => {
+    const { getByLabelText } = render(<MyComponent />);
+    expect(getByLabelText("Close button")).toBeTruthy();
+  });
+
+  it("should have proper accessibility roles", () => {
+    const { getByRole } = render(<MyComponent />);
+    expect(getByRole("button")).toBeTruthy();
+  });
+
+  it("should have proper accessibility hints", () => {
+    const { getByA11yHint } = render(<MyComponent />);
+    expect(getByA11yHint("Double tap to close")).toBeTruthy();
+  });
+});
+```
+
+## Performance Testing
+
+### Memory Leak Detection
+
+```typescript
+describe("Performance", () => {
+  it("should not have memory leaks", () => {
+    const { unmount } = render(<MyComponent />);
+
+    // Simulate component lifecycle
+    unmount();
+
+    // Check for cleanup
+    expect(/* cleanup assertions */).toBeTruthy();
+  });
+});
+```
+
+## Error Boundary Testing
+
+```typescript
+describe("Error Handling", () => {
+  it("should catch and display errors properly", () => {
+    const ThrowError = () => {
+      throw new Error("Test error");
+    };
+
+    const { getByText } = render(
+      <ErrorBoundary>
+        <ThrowError />
+      </ErrorBoundary>
+    );
+
+    expect(getByText(/something went wrong/i)).toBeTruthy();
+  });
+});
+```
+
+## Test Configuration
+
+### Jest Configuration (jest.config.js)
+
+```javascript
+module.exports = {
+  preset: "react-native",
+  setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
+  testMatch: ["**/__tests__/**/*.(test|spec).(ts|tsx|js)"],
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/**/__tests__/**",
+    "!src/**/node_modules/**",
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
+  moduleNameMapping: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+};
+```
+
+## AI Testing Instructions
+
+When generating tests with AI, always:
+
+1. **Follow the established patterns** shown in this document
+2. **Include proper test descriptions** that clearly explain what is being tested
+3. **Test both happy and sad paths** (success and error scenarios)
+4. **Mock external dependencies** appropriately
+5. **Use meaningful test data** rather than generic values
+6. **Include accessibility tests** for UI components
+7. **Test user interactions** comprehensively
+8. **Follow the AAA pattern** (Arrange, Act, Assert)
+9. **Keep tests focused and atomic** - one concept per test
+10. **Use descriptive variable names** and clear assertions
+
+### AI Prompt Templates
+
+#### For Component Tests:
+
+```
+Generate comprehensive tests for the [ComponentName] component including:
+- Props validation and default values
+- User interactions (press, change, focus, blur)
+- Conditional rendering logic
+- Error states and edge cases
+- Accessibility compliance
+- Integration with navigation/state management
+```
+
+#### For Hook Tests:
+
+```
+Create tests for the [hookName] custom hook covering:
+- Initial state and return values
+- State updates and side effects
+- Error handling and edge cases
+- Cleanup and memory management
+- Dependencies and re-renders
+```
+
+#### For Screen Tests:
+
+```
+Generate integration tests for [ScreenName] including:
+- Initial render and loading states
+- Navigation interactions
+- Form submissions and validations
+- API integration and error handling
+- User journey through the screen
+```
+
+## Quality Checklist
+
+Before considering tests complete, ensure:
+
+- [ ] All critical paths are tested
+- [ ] Error scenarios are covered
+- [ ] Mocks are properly implemented
+- [ ] Tests are readable and maintainable
+- [ ] Coverage meets minimum requirements (70%)
+- [ ] Tests run independently without side effects
+- [ ] Accessibility requirements are tested
+- [ ] Performance implications are considered
