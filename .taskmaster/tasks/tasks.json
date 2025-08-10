@@ -96,7 +96,67 @@
           1
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "AsyncStorage 설정 및 데이터 모델 정의",
+            "description": "AsyncStorage 패키지를 설치하고 앱에서 사용할 데이터 모델(설정, 카테고리, 링크)의 타입과 인터페이스를 정의합니다.",
+            "dependencies": [],
+            "details": "1. AsyncStorage 설치: `expo install @react-native-async-storage/async-storage`\n2. 타입스크립트 인터페이스 정의:\n   - 설정 인터페이스: `Settings` (비밀번호, 첫 실행 여부)\n   - 카테고리 인터페이스: `Category` (ID, 이름, 색상, 생성일)\n   - 링크 인터페이스: `Link` (ID, URL, 제목, 설명, 썸네일, 카테고리ID, 생성일, 수정일)\n3. 데이터 저장 키 상수 정의: `STORAGE_KEYS`\n4. 타입 가드 함수 구현: 데이터 유효성 검증을 위한 함수",
+            "status": "done",
+            "testStrategy": "1. 인터페이스 정의 검증: 각 인터페이스가 필요한 모든 필드를 포함하는지 확인\n2. 타입 가드 함수 테스트: 유효한/유효하지 않은 데이터에 대한 반응 테스트"
+          },
+          {
+            "id": 2,
+            "title": "기본 AsyncStorage 래퍼 함수 구현",
+            "description": "AsyncStorage의 기본 작업(getItem, setItem, removeItem)을 래핑하는 유틸리티 함수를 구현하고 에러 처리 메커니즘을 추가합니다.",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "1. 기본 래퍼 함수 구현:\n   - `getStorageItem<T>`: 키를 통해 데이터 조회 및 타입 변환\n   - `setStorageItem<T>`: 키와 데이터로 저장\n   - `removeStorageItem`: 키를 통해 데이터 삭제\n   - `clearStorage`: 모든 데이터 삭제\n2. 에러 처리 로직 추가: try-catch 구문으로 모든 AsyncStorage 작업 래핑\n3. 로깅 메커니즘 추가: 개발 모드에서 저장소 작업 로깅",
+            "status": "done",
+            "testStrategy": "1. 기본 CRUD 작업 테스트: 각 래퍼 함수가 올바르게 작동하는지 확인\n2. 에러 처리 테스트: AsyncStorage 실패 시 적절한 에러 처리가 이루어지는지 확인\n3. AsyncStorage 모킹: `jest.mock('@react-native-async-storage/async-storage')`를 사용한 테스트"
+          },
+          {
+            "id": 3,
+            "title": "데이터 타입별 CRUD 유틸리티 함수 구현",
+            "description": "설정, 카테고리, 링크 등 각 데이터 타입에 특화된 CRUD 함수를 구현합니다.",
+            "dependencies": [
+              "2.1",
+              "2.2"
+            ],
+            "details": "1. 설정 관련 함수:\n   - `getSettings`, `updateSettings`, `resetSettings`\n2. 카테고리 관련 함수:\n   - `getCategories`, `getCategoryById`, `addCategory`, `updateCategory`, `deleteCategory`\n3. 링크 관련 함수:\n   - `getLinks`, `getLinkById`, `getLinksInCategory`, `addLink`, `updateLink`, `deleteLink`\n4. 검색 관련 함수:\n   - `searchLinks`: 제목, 설명, URL 등에서 키워드 검색\n5. 정렬 관련 함수:\n   - `sortLinks`: 날짜, 제목 등으로 정렬",
+            "status": "done",
+            "testStrategy": "1. 각 CRUD 함수 단위 테스트: 데이터 생성, 조회, 수정, 삭제 기능 검증\n2. 데이터 관계 테스트: 카테고리 삭제 시 관련 링크 처리 검증\n3. 검색 및 정렬 테스트: 다양한 검색어와 정렬 조건에 대한 결과 검증"
+          },
+          {
+            "id": 4,
+            "title": "메모리 캐싱 레이어 및 데이터 초기화 구현",
+            "description": "빈번한 AsyncStorage 접근을 최소화하기 위한 메모리 캐싱 레이어와 앱 첫 실행 시 기본 데이터를 초기화하는 함수를 구현합니다.",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3"
+            ],
+            "details": "1. 메모리 캐싱 레이어 구현:\n   - 인메모리 캐시 객체 생성\n   - 데이터 조회 시 캐시 우선 확인 후 없으면 AsyncStorage 접근\n   - 데이터 변경 시 캐시와 AsyncStorage 동시 업데이트\n   - 캐시 무효화 메커니즘\n2. 데이터 초기화 함수 구현:\n   - `initializeAppData`: 앱 첫 실행 확인 및 기본 데이터 생성\n   - 기본 카테고리 생성 (예: '즐겨찾기', '읽을거리', '쇼핑')\n   - 기본 설정 초기화",
+            "status": "done",
+            "testStrategy": "1. 캐싱 효율성 테스트: 동일한 데이터 반복 요청 시 AsyncStorage 접근 최소화 확인\n2. 캐시 일관성 테스트: 데이터 변경 시 캐시와 저장소 간 일관성 유지 확인\n3. 초기화 테스트: 앱 첫 실행 시 기본 데이터가 올바르게 생성되는지 확인"
+          },
+          {
+            "id": 5,
+            "title": "데이터 마이그레이션 및 에러 복구 메커니즘 구현",
+            "description": "앱 업데이트 시 데이터 구조 변경을 처리하는 마이그레이션 유틸리티와 데이터 손상 시 복구 메커니즘을 구현합니다.",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3",
+              "2.4"
+            ],
+            "details": "1. 데이터 마이그레이션 유틸리티 구현:\n   - `migrateDataIfNeeded`: 앱 버전 확인 및 필요 시 마이그레이션 실행\n   - 버전별 마이그레이션 함수 구현\n   - 마이그레이션 로그 기록\n2. 에러 처리 및 복구 메커니즘 구현:\n   - 데이터 손상 감지 함수\n   - 백업 데이터 생성 및 관리\n   - 손상된 데이터 복구 시도\n   - 복구 불가 시 기본값으로 초기화\n3. 디버깅 도구 구현:\n   - 개발 모드에서 데이터 상태 확인 기능\n   - 수동 마이그레이션 트리거",
+            "status": "pending",
+            "testStrategy": "1. 마이그레이션 테스트: 다양한 버전 간 데이터 구조 변경 시나리오 테스트\n2. 데이터 손상 테스트: 의도적으로 손상된 데이터에 대한 복구 메커니즘 테스트\n3. 에러 케이스 테스트: 저장소 접근 실패, 데이터 파싱 오류 등 다양한 에러 상황 테스트"
+          }
+        ]
       },
       {
         "id": 3,
@@ -250,7 +310,7 @@
     ],
     "metadata": {
       "created": "2025-08-09T10:56:37.154Z",
-      "updated": "2025-08-10T07:35:05.662Z",
+      "updated": "2025-08-10T10:22:52.941Z",
       "description": "Tasks for master context"
     }
   }
