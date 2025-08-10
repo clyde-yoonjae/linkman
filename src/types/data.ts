@@ -183,10 +183,16 @@ export function isValidLink(data: any): data is Link {
     typeof data.id === "string" &&
     typeof data.url === "string" &&
     typeof data.title === "string" &&
+    (data.description === undefined || typeof data.description === "string") &&
+    (data.thumbnailUrl === undefined ||
+      typeof data.thumbnailUrl === "string") &&
     typeof data.categoryId === "string" &&
     typeof data.isFavorite === "boolean" &&
     Array.isArray(data.tags) &&
+    (data.notes === undefined || typeof data.notes === "string") &&
     typeof data.sortOrder === "number" &&
+    (data.lastAccessedAt === undefined ||
+      typeof data.lastAccessedAt === "string") &&
     typeof data.accessCount === "number" &&
     typeof data.createdAt === "string" &&
     typeof data.updatedAt === "string"
