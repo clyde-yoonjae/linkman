@@ -1,0 +1,257 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "프로젝트 초기 설정 및 네비게이션 구조 구축",
+        "description": "React Native와 Expo를 사용하여 프로젝트를 초기화하고 기본 네비게이션 구조를 설정합니다.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "details": "1. Expo CLI를 사용하여 프로젝트 초기화: `expo init linkman --template blank-typescript`\n2. 필요한 기본 패키지 설치:\n   - React Navigation v6.x: `npm install @react-navigation/native @react-navigation/stack @react-navigation/bottom-tabs`\n   - Expo 관련 패키지: `expo install react-native-screens react-native-safe-area-context`\n3. 기본 폴더 구조 설정:\n   - `/src/screens`: 화면 컴포넌트\n   - `/src/components`: 재사용 가능한 UI 컴포넌트\n   - `/src/hooks`: 커스텀 훅\n   - `/src/utils`: 유틸리티 함수\n   - `/src/contexts`: 컨텍스트 API\n   - `/src/types`: 타입 정의\n   - `/src/navigation`: 네비게이션 구성 요소\n4. 기본 네비게이션 구조 구현:\n   - AppNavigator: 인증 상태에 따른 라우팅\n   - MainTabNavigator: 메인 앱의 탭 네비게이션\n   - 인증 스택: 온보딩, 비밀번호 설정, 로그인 화면\n   - 메인 스택: 메인 화면, 카테고리 상세, 링크 추가/편집 화면\n5. 테마 설정: 색상, 폰트, 간격 등의 디자인 시스템 구성\n6. 기본 컴포넌트 스타일링 설정\n7. 유틸리티 함수 구현 (날짜 포맷팅, 유효성 검증, ID 생성 등)",
+        "testStrategy": "1. Jest 설정: `npm install --save-dev jest jest-expo react-test-renderer @testing-library/react-native`\n2. 네비게이션 구조 테스트: 각 화면 간 이동이 올바르게 작동하는지 확인\n3. 기본 컴포넌트 렌더링 테스트: 주요 컴포넌트가 올바르게 렌더링되는지 확인\n4. 테마 적용 테스트: 디자인 시스템이 일관되게 적용되는지 확인",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "React Navigation 패키지 설치",
+            "description": "필요한 React Navigation 패키지 설치 (@react-navigation/native, @react-navigation/stack, @react-navigation/bottom-tabs)",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "기본 폴더 구조 설정",
+            "description": "프로젝트의 기본 폴더 구조 생성 (screens, components, hooks, utils, contexts, types, navigation)",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "네비게이션 구조 구현",
+            "description": "AppNavigator, MainTabNavigator 및 관련 타입 정의 구현",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "기본 화면 컴포넌트 생성",
+            "description": "OnboardingScreen, LoginScreen, HomeScreen, CategoryDetailScreen, AddLinkScreen, SettingsScreen 구현",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "디자인 시스템 및 테마 설정",
+            "description": "ThemeContext 구현 및 일관된 디자인 토큰 적용",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "유틸리티 함수 구현",
+            "description": "날짜 포맷팅, 유효성 검증, ID 생성 등의 유틸리티 함수 구현",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "App.tsx 통합",
+            "description": "모든 구성 요소를 App.tsx에 통합",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "테스트 실행 및 확인",
+            "description": "모든 테스트 실행 및 통과 확인 (10개 테스트 성공)",
+            "status": "completed",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "로컬 데이터 저장소 구현",
+        "description": "AsyncStorage를 사용하여 로컬 데이터 저장소를 구현하고 데이터 모델을 정의합니다.",
+        "details": "1. AsyncStorage 설정: `expo install @react-native-async-storage/async-storage`\n2. 데이터 모델 정의 (PRD의 JSON 구조 참조):\n   - 설정 (비밀번호, 첫 실행 여부)\n   - 카테고리 (ID, 이름, 색상, 생성일)\n   - 링크 (ID, URL, 제목, 설명, 썸네일, 카테고리ID, 생성일, 수정일)\n3. CRUD 유틸리티 함수 구현:\n   - `getItem`, `setItem`, `removeItem` 등의 AsyncStorage 래퍼 함수\n   - 데이터 타입별 CRUD 함수 (예: `getLinks`, `addLink`, `updateLink`, `deleteLink`)\n4. 데이터 초기화 함수: 앱 첫 실행 시 기본 카테고리 생성\n5. 데이터 마이그레이션 유틸리티: 앱 업데이트 시 데이터 구조 변경을 처리\n6. 메모리 캐싱 레이어 구현: 빈번한 AsyncStorage 접근 최소화\n7. 에러 처리 및 복구 메커니즘 구현",
+        "testStrategy": "1. AsyncStorage 모킹: `jest.mock('@react-native-async-storage/async-storage')`\n2. CRUD 작업 단위 테스트: 각 데이터 타입별 저장, 조회, 수정, 삭제 기능 테스트\n3. 데이터 초기화 테스트: 앱 첫 실행 시 기본 데이터가 올바르게 생성되는지 확인\n4. 에러 케이스 테스트: 저장소 접근 실패 시 적절한 에러 처리가 이루어지는지 확인\n5. 성능 테스트: 대량의 데이터 처리 시 응답 시간 측정",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "비밀번호 보안 시스템 구현",
+        "description": "4자리 비밀번호 설정, 확인, 변경 기능과 앱 잠금 시스템을 구현합니다.",
+        "details": "1. 암호화 라이브러리 설치: `npm install expo-crypto`\n2. 비밀번호 해싱 유틸리티 함수 구현:\n   - `hashPassword`: 4자리 비밀번호를 안전하게 해싱\n   - `verifyPassword`: 입력된 비밀번호와 저장된 해시 비교\n3. 비밀번호 관련 컴포넌트 구현:\n   - 숫자 키패드 컴포넌트: 4자리 비밀번호 입력용\n   - 비밀번호 설정 화면: 초기 비밀번호 설정 및 확인\n   - 비밀번호 변경 화면: 기존 비밀번호 확인 후 새 비밀번호 설정\n4. 앱 잠금 시스템 구현:\n   - 앱 시작 시 비밀번호 확인\n   - 앱이 백그라운드로 갔다가 돌아올 때 비밀번호 재확인\n   - 비밀번호 오입력 시 시각적 피드백 (애니메이션)\n5. 비밀번호 재설정 메커니즘 (선택적): 비밀번호 분실 시 복구 방법\n6. 앱 백그라운드 시 화면 숨김 기능: `expo-screen-capture` 사용",
+        "testStrategy": "1. 비밀번호 해싱 테스트: 동일한 비밀번호가 항상 동일하게 검증되는지 확인\n2. 비밀번호 검증 테스트: 올바른/잘못된 비밀번호 입력 시 적절한 결과 반환 확인\n3. UI 테스트: 비밀번호 입력 컴포넌트가 올바르게 작동하는지 확인\n4. 앱 상태 변경 테스트: 앱이 백그라운드에서 포그라운드로 돌아올 때 잠금 화면 표시 확인\n5. 에러 케이스 테스트: 비밀번호 오입력 시 적절한 피드백 제공 확인",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "온보딩 및 로그인 화면 구현",
+        "description": "앱 첫 실행 시 온보딩 화면과 비밀번호 로그인 화면을 구현합니다.",
+        "details": "1. 온보딩 화면 구현:\n   - 앱 소개 슬라이드 (3-4개 화면)\n   - 기능 설명 및 시각적 가이드\n   - 비밀번호 설정으로 이동하는 버튼\n2. 온보딩 라이브러리 설치: `npm install react-native-onboarding-swiper`\n3. 로그인 화면 구현:\n   - 4자리 숫자 입력 패드\n   - 비밀번호 확인 버튼\n   - 오류 시 애니메이션 효과 (react-native-reanimated 사용)\n4. 앱 상태 관리:\n   - 첫 실행 여부 확인 (AsyncStorage에 'isFirstLaunch' 플래그)\n   - 로그인 상태 관리 (Context API 사용)\n5. 화면 전환 애니메이션 구현\n6. 접근성 고려: 스크린 리더 지원, 충분한 대비, 적절한 포커스 관리",
+        "testStrategy": "1. 온보딩 흐름 테스트: 슬라이드 간 이동이 올바르게 작동하는지 확인\n2. 첫 실행 감지 테스트: 앱 첫 실행 시 온보딩 표시, 이후 실행 시 로그인 화면 표시 확인\n3. 로그인 프로세스 테스트: 올바른/잘못된 비밀번호 입력 시 적절한 동작 확인\n4. UI 상태 테스트: 로딩, 오류, 성공 상태가 올바르게 표시되는지 확인\n5. 접근성 테스트: 스크린 리더로 모든 요소에 접근 가능한지 확인",
+        "priority": "high",
+        "dependencies": [
+          1,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "카테고리 관리 기능 구현",
+        "description": "사용자 정의 카테고리 생성, 편집, 삭제 및 카테고리별 조회 기능을 구현합니다.",
+        "details": "1. 카테고리 관련 컴포넌트 구현:\n   - 카테고리 목록 컴포넌트: 가로 스크롤 형태\n   - 카테고리 생성/편집 모달\n   - 카테고리 색상 선택기\n2. 카테고리 CRUD 기능 구현:\n   - 생성: 이름, 색상 지정\n   - 조회: 전체 카테고리 및 개별 카테고리 조회\n   - 수정: 이름, 색상 변경\n   - 삭제: 카테고리 삭제 (연결된 링크 처리 로직 포함)\n3. 기본 카테고리 설정: \"일반\", \"업무\", \"취미\" 등 기본 카테고리 제공\n4. 카테고리별 링크 조회 기능: 특정 카테고리에 속한 링크만 필터링\n5. 카테고리 관련 상태 관리: Context API 또는 상태 관리 라이브러리 사용\n6. 애니메이션 효과: 카테고리 선택/추가/삭제 시 시각적 피드백",
+        "testStrategy": "1. 카테고리 CRUD 테스트: 생성, 조회, 수정, 삭제 기능이 올바르게 작동하는지 확인\n2. 데이터 일관성 테스트: 카테고리 삭제 시 연결된 링크가 적절히 처리되는지 확인\n3. UI 테스트: 카테고리 목록, 생성/편집 모달이 올바르게 렌더링되는지 확인\n4. 필터링 테스트: 카테고리별 링크 필터링이 정확하게 작동하는지 확인\n5. 성능 테스트: 다수의 카테고리 존재 시 렌더링 성능 확인",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "링크 저장 및 메타데이터 추출 기능 구현",
+        "description": "URL 입력 및 클립보드 감지, 웹페이지 메타데이터(제목, 설명, 썸네일) 추출 기능을 구현합니다.",
+        "details": "1. 클립보드 접근 설정: `expo install expo-clipboard`\n2. URL 입력 및 검증 기능 구현:\n   - 클립보드에서 URL 자동 감지\n   - URL 형식 검증 (정규식 사용)\n3. 메타데이터 추출 라이브러리 설치: `npm install react-native-opengraph-kit`\n4. 메타데이터 추출 기능 구현:\n   - Open Graph 태그에서 제목, 설명, 이미지 URL 추출\n   - 추출 실패 시 대체 방법 (기본 이미지, 수동 입력 옵션)\n5. 이미지 처리:\n   - 썸네일 이미지 캐싱: `expo-file-system` 사용\n   - 이미지 압축 및 크기 최적화\n6. 링크 저장 UI 구현:\n   - URL 입력 필드\n   - 메타데이터 미리보기\n   - 카테고리 선택 드롭다운\n   - 저장 버튼\n7. 오프라인 상태 처리: 네트워크 없을 때 메타데이터 추출 실패 처리",
+        "testStrategy": "1. URL 검증 테스트: 다양한 URL 형식에 대한 검증 로직 테스트\n2. 메타데이터 추출 테스트: 다양한 웹사이트에서 메타데이터 추출 성공/실패 케이스 테스트\n3. 클립보드 감지 테스트: URL이 클립보드에 있을 때 자동 감지 확인\n4. 이미지 처리 테스트: 썸네일 이미지 캐싱 및 로딩 테스트\n5. 오프라인 상태 테스트: 네트워크 연결 없을 때 적절한 오류 처리 확인",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "링크 CRUD 기능 구현",
+        "description": "링크의 생성, 조회, 수정, 삭제 기능과 관련 UI를 구현합니다.",
+        "details": "1. 링크 관련 컴포넌트 구현:\n   - 링크 카드 컴포넌트: 썸네일, 제목, 설명, 카테고리 표시\n   - 링크 목록 컴포넌트: 세로 스크롤 형태\n   - 링크 상세 보기 모달/화면\n   - 링크 추가/편집 폼\n2. 링크 CRUD 기능 구현:\n   - 생성: URL, 제목, 설명, 카테고리, 썸네일 저장\n   - 조회: 전체 링크 및 개별 링크 상세 조회\n   - 수정: 제목, 설명, 카테고리 변경\n   - 삭제: 개별 링크 삭제\n3. 스와이프 제스처 구현: `react-native-gesture-handler` 사용\n   - 왼쪽 스와이프: 편집 옵션\n   - 오른쪽 스와이프: 삭제 옵션\n4. 링크 열기 기능: `Linking.openURL()` 사용\n5. 공유 기능: `expo-sharing` 사용\n6. 애니메이션 효과: 링크 추가/삭제 시 시각적 피드백",
+        "testStrategy": "1. 링크 CRUD 테스트: 생성, 조회, 수정, 삭제 기능이 올바르게 작동하는지 확인\n2. UI 테스트: 링크 카드, 목록, 상세 보기가 올바르게 렌더링되는지 확인\n3. 제스처 테스트: 스와이프 제스처가 올바르게 작동하는지 확인\n4. 링크 열기 테스트: 외부 브라우저로 링크가 올바르게 열리는지 확인\n5. 공유 기능 테스트: 링크 공유가 올바르게 작동하는지 확인",
+        "priority": "high",
+        "dependencies": [
+          2,
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "검색 및 필터링 기능 구현",
+        "description": "링크 제목, 설명, URL, 카테고리에서 키워드 검색 및 다양한 필터링/정렬 기능을 구현합니다.",
+        "details": "1. 검색 컴포넌트 구현:\n   - 검색 입력 필드\n   - 검색 결과 목록\n   - 검색 필터 옵션 (제목, 설명, URL, 카테고리)\n2. 검색 로직 구현:\n   - 키워드 기반 검색 (대소문자 무시)\n   - 다중 필드 검색 (제목, 설명, URL, 카테고리)\n   - 검색 결과 하이라이팅\n3. 필터링 기능 구현:\n   - 카테고리별 필터링\n   - 날짜별 필터링 (오늘, 이번 주, 이번 달, 전체)\n4. 정렬 기능 구현:\n   - 저장 날짜순 (최신/오래된 순)\n   - 제목순 (가나다/알파벳 순)\n   - 카테고리순\n5. 검색 히스토리 저장 (선택적)\n6. 검색 결과 없을 때 UI 처리\n7. 성능 최적화: 디바운싱, 메모이제이션 등",
+        "testStrategy": "1. 검색 정확도 테스트: 다양한 키워드로 검색 결과가 정확한지 확인\n2. 필터링 테스트: 카테고리별, 날짜별 필터링이 올바르게 작동하는지 확인\n3. 정렬 테스트: 다양한 정렬 옵션이 올바르게 적용되는지 확인\n4. 성능 테스트: 대량의 링크 데이터에서 검색 성능 측정\n5. UI 테스트: 검색 결과 표시, 필터 UI가 올바르게 작동하는지 확인",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "드래그 앤 드롭 정렬 기능 구현",
+        "description": "카테고리 내에서 링크 순서를 드래그 앤 드롭으로 변경하는 기능을 구현합니다.",
+        "details": "1. 드래그 앤 드롭 라이브러리 설치: `npm install react-native-draggable-flatlist`\n2. 드래그 가능한 링크 목록 컴포넌트 구현:\n   - 드래그 핸들 UI\n   - 드래그 중 시각적 피드백 (그림자, 스케일 변화)\n   - 드롭 위치 표시\n3. 순서 변경 로직 구현:\n   - 드래그 완료 후 새 순서 저장\n   - 카테고리별 독립적인 순서 관리\n4. 순서 정보 데이터 모델 확장:\n   - 링크 데이터에 `order` 필드 추가\n   - 카테고리별 순서 정보 저장\n5. 햅틱 피드백 추가: `expo-haptics` 사용\n6. 애니메이션 효과: 드래그 시작/종료 시 시각적 피드백\n7. 접근성 고려: 키보드 네비게이션 지원",
+        "testStrategy": "1. 드래그 앤 드롭 테스트: 링크 순서 변경이 올바르게 작동하는지 확인\n2. 데이터 일관성 테스트: 순서 변경 후 데이터가 올바르게 저장되는지 확인\n3. 카테고리별 독립성 테스트: 각 카테고리의 순서가 독립적으로 유지되는지 확인\n4. 성능 테스트: 다수의 링크가 있을 때 드래그 성능 확인\n5. 접근성 테스트: 키보드로도 순서 변경이 가능한지 확인",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "메인 화면 및 UI 컴포넌트 구현",
+        "description": "앱의 메인 화면과 공통 UI 컴포넌트를 구현하여 일관된 사용자 경험을 제공합니다.",
+        "details": "1. 메인 화면 레이아웃 구현:\n   - 상단: 검색바\n   - 중앙: 새 링크 추가 버튼 (플로팅 액션 버튼)\n   - 하단: 카테고리 목록 (가로 스크롤) + 최근 저장 링크 목록 (세로 스크롤)\n2. 공통 UI 컴포넌트 구현:\n   - 버튼 (기본, 강조, 비활성화 상태)\n   - 입력 필드 (텍스트, URL, 검색)\n   - 카드 (링크 카드, 카테고리 카드)\n   - 모달 (확인, 경고, 입력)\n   - 로딩 인디케이터\n   - 토스트 메시지\n3. 테마 시스템 구현:\n   - 색상 팔레트\n   - 타이포그래피\n   - 간격 및 크기\n   - 다크 모드 지원 (선택적)\n4. 애니메이션 및 전환 효과:\n   - 화면 전환 애니메이션\n   - 버튼 누름 효과\n   - 스크롤 효과\n5. 반응형 레이아웃: 다양한 화면 크기 지원",
+        "testStrategy": "1. 레이아웃 테스트: 다양한 화면 크기에서 레이아웃이 올바르게 표시되는지 확인\n2. 컴포넌트 테스트: 각 UI 컴포넌트가 다양한 상태에서 올바르게 렌더링되는지 확인\n3. 테마 테스트: 테마가 일관되게 적용되는지 확인\n4. 애니메이션 테스트: 애니메이션이 부드럽게 작동하는지 확인\n5. 접근성 테스트: 모든 UI 요소가 접근성 지침을 준수하는지 확인",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "설정 화면 및 사용자 기본 설정 구현",
+        "description": "앱 설정 화면과 사용자 기본 설정 관리 기능을 구현합니다.",
+        "details": "1. 설정 화면 구현:\n   - 비밀번호 변경\n   - 앱 정보 (버전, 개발자 정보)\n   - 기본 카테고리 설정\n   - 테마 설정 (선택적)\n   - 언어 설정 (한국어/영어)\n2. 사용자 기본 설정 관리:\n   - 기본 카테고리 설정\n   - UI 기본 설정 (목록 보기 방식 등)\n3. 비밀번호 변경 기능:\n   - 현재 비밀번호 확인\n   - 새 비밀번호 설정 및 확인\n4. 데이터 관리 옵션 (선택적):\n   - 데이터 초기화\n   - 데이터 백업/복원\n5. 앱 정보 표시:\n   - 버전 정보\n   - 개발자 정보\n   - 오픈소스 라이선스",
+        "testStrategy": "1. 설정 저장 테스트: 사용자 설정이 올바르게 저장되고 로드되는지 확인\n2. 비밀번호 변경 테스트: 비밀번호 변경 프로세스가 올바르게 작동하는지 확인\n3. 데이터 관리 테스트: 데이터 초기화, 백업/복원 기능이 올바르게 작동하는지 확인\n4. UI 테스트: 설정 화면의 모든 옵션이 올바르게 표시되고 작동하는지 확인\n5. 다국어 테스트: 언어 설정에 따라 UI가 올바르게 변경되는지 확인",
+        "priority": "low",
+        "dependencies": [
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "성능 최적화 및 앱 배포 준비",
+        "description": "앱의 성능을 최적화하고 배포를 위한 준비 작업을 수행합니다.",
+        "details": "1. 성능 최적화:\n   - 메모리 사용량 최적화: 이미지 캐싱 전략 개선\n   - 렌더링 성능 최적화: React.memo, useMemo, useCallback 활용\n   - 애니메이션 성능 최적화: react-native-reanimated 활용\n   - AsyncStorage 접근 최적화: 배치 처리, 캐싱 레이어\n2. 코드 정리 및 리팩토링:\n   - 중복 코드 제거\n   - 컴포넌트 구조 개선\n   - 타입 정의 완성\n3. 에러 처리 개선:\n   - 전역 에러 핸들링\n   - 사용자 친화적인 에러 메시지\n   - 크래시 방지 메커니즘\n4. 배포 준비:\n   - 앱 아이콘 및 스플래시 스크린 설정\n   - 앱 버전 및 빌드 번호 설정\n   - Android/iOS 배포 설정\n   - 앱 스토어 스크린샷 및 설명 준비\n5. 최종 테스트:\n   - 엔드투엔드 테스트\n   - 다양한 기기에서 테스트",
+        "testStrategy": "1. 성능 측정: 메모리 사용량, 렌더링 시간, 앱 시작 시간 측정\n2. 크래시 테스트: 다양한 에러 상황에서 앱이 크래시 없이 작동하는지 확인\n3. 배터리 사용량 테스트: 백그라운드 및 포그라운드에서 배터리 사용량 측정\n4. 다양한 기기 테스트: 다양한 화면 크기와 OS 버전에서 테스트\n5. 배포 전 체크리스트: 모든 기능이 정상 작동하는지 최종 확인",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-09T10:56:37.154Z",
+      "updated": "2025-08-10T07:35:05.662Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
