@@ -1,0 +1,133 @@
+# Task ID: 2
+# Title: 로컬 데이터 저장소 구현
+# Status: pending
+# Dependencies: 1
+# Priority: high
+# Description: AsyncStorage를 사용하여 로컬 데이터 저장소를 구현하고 데이터 모델을 정의합니다.
+# Details:
+1. AsyncStorage 설정: `expo install @react-native-async-storage/async-storage`
+2. 데이터 모델 정의 (PRD의 JSON 구조 참조):
+   - 설정 (비밀번호, 첫 실행 여부)
+   - 카테고리 (ID, 이름, 색상, 생성일)
+   - 링크 (ID, URL, 제목, 설명, 썸네일, 카테고리ID, 생성일, 수정일)
+3. CRUD 유틸리티 함수 구현:
+   - `getItem`, `setItem`, `removeItem` 등의 AsyncStorage 래퍼 함수
+   - 데이터 타입별 CRUD 함수 (예: `getLinks`, `addLink`, `updateLink`, `deleteLink`)
+4. 데이터 초기화 함수: 앱 첫 실행 시 기본 카테고리 생성
+5. 데이터 마이그레이션 유틸리티: 앱 업데이트 시 데이터 구조 변경을 처리
+6. 메모리 캐싱 레이어 구현: 빈번한 AsyncStorage 접근 최소화
+7. 에러 처리 및 복구 메커니즘 구현
+
+# Test Strategy:
+1. AsyncStorage 모킹: `jest.mock('@react-native-async-storage/async-storage')`
+2. CRUD 작업 단위 테스트: 각 데이터 타입별 저장, 조회, 수정, 삭제 기능 테스트
+3. 데이터 초기화 테스트: 앱 첫 실행 시 기본 데이터가 올바르게 생성되는지 확인
+4. 에러 케이스 테스트: 저장소 접근 실패 시 적절한 에러 처리가 이루어지는지 확인
+5. 성능 테스트: 대량의 데이터 처리 시 응답 시간 측정
+
+# Subtasks:
+## 1. AsyncStorage 설정 및 데이터 모델 정의 [done]
+### Dependencies: None
+### Description: AsyncStorage 패키지를 설치하고 앱에서 사용할 데이터 모델(설정, 카테고리, 링크)의 타입과 인터페이스를 정의합니다.
+### Details:
+1. AsyncStorage 설치: `expo install @react-native-async-storage/async-storage`
+2. 타입스크립트 인터페이스 정의:
+   - 설정 인터페이스: `Settings` (비밀번호, 첫 실행 여부)
+   - 카테고리 인터페이스: `Category` (ID, 이름, 색상, 생성일)
+   - 링크 인터페이스: `Link` (ID, URL, 제목, 설명, 썸네일, 카테고리ID, 생성일, 수정일)
+3. 데이터 저장 키 상수 정의: `STORAGE_KEYS`
+4. 타입 가드 함수 구현: 데이터 유효성 검증을 위한 함수
+
+## 2. 기본 AsyncStorage 래퍼 함수 구현 [done]
+### Dependencies: 2.1
+### Description: AsyncStorage의 기본 작업(getItem, setItem, removeItem)을 래핑하는 유틸리티 함수를 구현하고 에러 처리 메커니즘을 추가합니다.
+### Details:
+1. 기본 래퍼 함수 구현:
+   - `getStorageItem<T>`: 키를 통해 데이터 조회 및 타입 변환
+   - `setStorageItem<T>`: 키와 데이터로 저장
+   - `removeStorageItem`: 키를 통해 데이터 삭제
+   - `clearStorage`: 모든 데이터 삭제
+2. 에러 처리 로직 추가: try-catch 구문으로 모든 AsyncStorage 작업 래핑
+3. 로깅 메커니즘 추가: 개발 모드에서 저장소 작업 로깅
+
+## 3. 데이터 타입별 CRUD 유틸리티 함수 구현 [done]
+### Dependencies: 2.1, 2.2
+### Description: 설정, 카테고리, 링크 등 각 데이터 타입에 특화된 CRUD 함수를 구현합니다.
+### Details:
+1. 설정 관련 함수:
+   - `getSettings`, `updateSettings`, `resetSettings`
+2. 카테고리 관련 함수:
+   - `getCategories`, `getCategoryById`, `addCategory`, `updateCategory`, `deleteCategory`
+3. 링크 관련 함수:
+   - `getLinks`, `getLinkById`, `getLinksInCategory`, `addLink`, `updateLink`, `deleteLink`
+4. 검색 관련 함수:
+   - `searchLinks`: 제목, 설명, URL 등에서 키워드 검색
+5. 정렬 관련 함수:
+   - `sortLinks`: 날짜, 제목 등으로 정렬
+
+## 4. 메모리 캐싱 레이어 및 데이터 초기화 구현 [done]
+### Dependencies: 2.1, 2.2, 2.3
+### Description: 빈번한 AsyncStorage 접근을 최소화하기 위한 메모리 캐싱 레이어와 앱 첫 실행 시 기본 데이터를 초기화하는 함수를 구현합니다.
+### Details:
+1. 메모리 캐싱 레이어 구현:
+   - 인메모리 캐시 객체 생성
+   - 데이터 조회 시 캐시 우선 확인 후 없으면 AsyncStorage 접근
+   - 데이터 변경 시 캐시와 AsyncStorage 동시 업데이트
+   - 캐시 무효화 메커니즘
+2. 데이터 초기화 함수 구현:
+   - `initializeAppData`: 앱 첫 실행 확인 및 기본 데이터 생성
+   - 기본 카테고리 생성 (예: '즐겨찾기', '읽을거리', '쇼핑')
+   - 기본 설정 초기화
+
+## 5. 데이터 마이그레이션 및 에러 복구 메커니즘 구현 [pending]
+### Dependencies: 2.1, 2.2, 2.3, 2.4
+### Description: 앱 업데이트 시 데이터 구조 변경을 처리하는 마이그레이션 유틸리티와 데이터 손상 시 복구 메커니즘을 구현합니다.
+### Details:
+1. 데이터 마이그레이션 유틸리티 구현:
+   - `migrateDataIfNeeded`: 앱 버전 확인 및 필요 시 마이그레이션 실행
+   - 버전별 마이그레이션 함수 구현
+   - 마이그레이션 로그 기록
+2. 에러 처리 및 복구 메커니즘 구현:
+   - 데이터 손상 감지 함수
+   - 백업 데이터 생성 및 관리
+   - 손상된 데이터 복구 시도
+   - 복구 불가 시 기본값으로 초기화
+3. 디버깅 도구 구현:
+   - 개발 모드에서 데이터 상태 확인 기능
+   - 수동 마이그레이션 트리거
+
+## 5. 스플래시 화면 구현 [pending]
+### Dependencies: 2.1, 2.10
+### Description: 앱 실행 시 처음 표시되는 스플래시 화면을 구현합니다. 스플래시 화면은 앱 로고를 표시하고, 앱의 초기화 상태에 따라 적절한 다음 화면(앱 소개 모달 또는 비밀번호 입력)으로 자동 전환됩니다.
+### Details:
+1. 스플래시 화면 컴포넌트 구현:
+   - 앱 로고 이미지 표시 (SVG 또는 PNG 형식)
+   - 로딩 인디케이터 추가 (선택적)
+   - 애니메이션 효과 구현 (로고 페이드인, 스케일 변화 등)
+   - React Native의 `Image` 및 `Animated` API 활용
+
+2. 앱 상태 확인 로직 구현:
+   - AsyncStorage를 사용하여 `isFirstLaunch` 상태 확인
+   - 앱 초기화 데이터 로드 (사용자 설정, 저장된 링크 등)
+   - 상태에 따른 라우팅 로직 구현:
+     * 최초 실행 시: 앱 소개 모달로 이동
+     * 이후 실행 시: 비밀번호 입력 화면으로 이동
+
+3. 화면 전환 애니메이션 구현:
+   - 페이드 아웃 효과로 다음 화면으로 자연스럽게 전환
+   - React Navigation의 화면 전환 애니메이션 커스터마이징
+   - 적절한 타이밍 설정 (2-3초 후 자동 전환)
+
+4. 스플래시 화면 설정:
+   - iOS: `LaunchScreen.storyboard` 설정
+   - Android: `splash_screen.xml` 설정
+   - React Native Splash Screen 라이브러리 통합 (`npm install react-native-splash-screen`)
+
+5. 오프라인 상태 처리:
+   - 네트워크 연결 확인
+   - 오프라인 상태에서도 기본 기능 작동 보장
+
+6. 성능 최적화:
+   - 스플래시 화면에서 필요한 리소스만 미리 로드
+   - 백그라운드에서 나머지 앱 데이터 로드
+

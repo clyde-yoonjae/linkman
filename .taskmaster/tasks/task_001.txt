@@ -1,0 +1,83 @@
+# Task ID: 1
+# Title: 프로젝트 초기 설정 및 네비게이션 구조 구축
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: React Native와 Expo를 사용하여 프로젝트를 초기화하고 기본 네비게이션 구조를 설정합니다.
+# Details:
+1. Expo CLI를 사용하여 프로젝트 초기화: `expo init linkman --template blank-typescript`
+2. 필요한 기본 패키지 설치:
+   - React Navigation v6.x: `npm install @react-navigation/native @react-navigation/stack @react-navigation/bottom-tabs`
+   - Expo 관련 패키지: `expo install react-native-screens react-native-safe-area-context`
+3. 기본 폴더 구조 설정:
+   - `/src/screens`: 화면 컴포넌트
+   - `/src/components`: 재사용 가능한 UI 컴포넌트
+   - `/src/hooks`: 커스텀 훅
+   - `/src/utils`: 유틸리티 함수
+   - `/src/contexts`: 컨텍스트 API
+   - `/src/types`: 타입 정의
+   - `/src/navigation`: 네비게이션 구성 요소
+4. 기본 네비게이션 구조 구현:
+   - AppNavigator: 인증 상태에 따른 라우팅
+   - MainTabNavigator: 메인 앱의 탭 네비게이션
+   - 인증 스택: 온보딩, 비밀번호 설정, 로그인 화면
+   - 메인 스택: 메인 화면, 카테고리 상세, 링크 추가/편집 화면
+5. 테마 설정: 색상, 폰트, 간격 등의 디자인 시스템 구성
+6. 기본 컴포넌트 스타일링 설정
+7. 유틸리티 함수 구현 (날짜 포맷팅, 유효성 검증, ID 생성 등)
+
+# Test Strategy:
+1. Jest 설정: `npm install --save-dev jest jest-expo react-test-renderer @testing-library/react-native`
+2. 네비게이션 구조 테스트: 각 화면 간 이동이 올바르게 작동하는지 확인
+3. 기본 컴포넌트 렌더링 테스트: 주요 컴포넌트가 올바르게 렌더링되는지 확인
+4. 테마 적용 테스트: 디자인 시스템이 일관되게 적용되는지 확인
+
+# Subtasks:
+## 1. React Navigation 패키지 설치 [completed]
+### Dependencies: None
+### Description: 필요한 React Navigation 패키지 설치 (@react-navigation/native, @react-navigation/stack, @react-navigation/bottom-tabs)
+### Details:
+
+
+## 2. 기본 폴더 구조 설정 [completed]
+### Dependencies: None
+### Description: 프로젝트의 기본 폴더 구조 생성 (screens, components, hooks, utils, contexts, types, navigation)
+### Details:
+
+
+## 3. 네비게이션 구조 구현 [completed]
+### Dependencies: None
+### Description: AppNavigator, MainTabNavigator 및 관련 타입 정의 구현
+### Details:
+
+
+## 4. 기본 화면 컴포넌트 생성 [completed]
+### Dependencies: None
+### Description: OnboardingScreen, LoginScreen, HomeScreen, CategoryDetailScreen, AddLinkScreen, SettingsScreen 구현
+### Details:
+
+
+## 5. 디자인 시스템 및 테마 설정 [completed]
+### Dependencies: None
+### Description: ThemeContext 구현 및 일관된 디자인 토큰 적용
+### Details:
+
+
+## 6. 유틸리티 함수 구현 [completed]
+### Dependencies: None
+### Description: 날짜 포맷팅, 유효성 검증, ID 생성 등의 유틸리티 함수 구현
+### Details:
+
+
+## 7. App.tsx 통합 [completed]
+### Dependencies: None
+### Description: 모든 구성 요소를 App.tsx에 통합
+### Details:
+
+
+## 8. 테스트 실행 및 확인 [completed]
+### Dependencies: None
+### Description: 모든 테스트 실행 및 통과 확인 (10개 테스트 성공)
+### Details:
+
+
